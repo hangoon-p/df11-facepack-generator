@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="선수 사진을 고정 프레임에 배치하고 PNG로 저장하는 이미지 편집기">
+  <title>DF11 페이스팩 생성기</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2312161f'/%3E%3Crect x='6' y='5' width='20' height='22' rx='3' fill='none' stroke='%23e8f0ff' stroke-width='2'/%3E%3Ccircle cx='16' cy='13' r='4' fill='%236ae4b9'/%3E%3Cpath d='M10 24c1-5 11-5 12 0' fill='%236ae4b9'/%3E%3C/svg%3E">
+  <style>
+    :root{color-scheme:light;--bg:#fff;--panel:#fff;--panel2:#f5f7fa;--line:#dce2e9;--text:#17202c;--muted:#687588;--accent:#10a77b;--accent2:#078c67;--danger:#d64949}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0,#f1faf7 0,transparent 34%),var(--bg);color:var(--text);font-family:Pretendard,"Noto Sans KR",system-ui,-apple-system,sans-serif}
+    button,input{font:inherit}.shell{max-width:1180px;margin:0 auto;padding:32px 24px 44px}.top{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:22px}.brand h1{font-size:clamp(1.45rem,3vw,2.15rem);line-height:1.2;margin:0 0 8px;letter-spacing:-.035em}.brand p{margin:0;color:var(--muted);font-size:.95rem}.privacy{color:#a9e9d2;font-size:.82rem;white-space:nowrap}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:7px;box-shadow:0 0 12px #6ae4b966}
+    .workspace{display:grid;grid-template-columns:minmax(300px,1fr) minmax(300px,1fr) 300px;gap:18px;align-items:start}.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:0 14px 42px #26374814}.stage-panel,.preview-panel{padding:18px}.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.panel-head h2{font-size:.95rem;margin:0;letter-spacing:-.015em}.badge{font-size:.72rem;color:var(--muted);padding:5px 8px;border:1px solid var(--line);border-radius:999px;background:#fafbfc}.canvas-wrap{min-height:430px;border:1px solid #e5e9ee;border-radius:13px;background-color:#f4f6f8;background-image:linear-gradient(45deg,#e6eaee 25%,transparent 25%),linear-gradient(-45deg,#e6eaee 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e6eaee 75%),linear-gradient(-45deg,transparent 75%,#e6eaee 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0;display:grid;place-items:center;overflow:hidden;padding:24px}.preview-panel .canvas-wrap{background:#f5f7f9}
+    canvas{display:block;width:260px;height:310px;max-width:100%;object-fit:contain}.editor-canvas{cursor:grab;touch-action:none;box-shadow:0 12px 28px #0008}.editor-canvas.dragging{cursor:grabbing}.preview-canvas{box-shadow:0 12px 28px #0009}.hint{margin:12px 0 0;color:var(--muted);font-size:.8rem;text-align:center}
+    .controls{padding:18px;display:flex;flex-direction:column;gap:18px}.group{padding-bottom:18px;border-bottom:1px solid var(--line)}.group:last-of-type{border:0;padding-bottom:0}.label{display:block;font-size:.84rem;font-weight:700;margin-bottom:9px}.upload{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:44px;border-radius:10px;background:var(--panel2);border:1px dashed #a8b2bf;color:var(--text);cursor:pointer;transition:.15s}.upload:hover{border-color:var(--accent);background:#edf9f5}.upload input{display:none}.filename{display:block;color:var(--muted);font-size:.72rem;margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.row{display:flex;align-items:center;gap:9px}.zoom-value{width:48px;text-align:right;color:var(--accent);font-variant-numeric:tabular-nums;font-size:.8rem}.icon-btn{width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--text);cursor:pointer}.icon-btn:hover{border-color:#9aa6b3;background:#eef1f4}.icon-btn:active{transform:translateY(1px)}input[type=range]{accent-color:var(--accent);width:100%}.nudge{display:grid;grid-template-columns:repeat(3,38px);grid-template-rows:repeat(2,38px);gap:6px;justify-content:center}.nudge [data-dir=up]{grid-column:2}.nudge [data-dir=left]{grid-column:1;grid-row:2}.nudge [data-dir=down]{grid-column:2;grid-row:2}.nudge [data-dir=right]{grid-column:3;grid-row:2}.reset{margin-left:auto;background:transparent;border:0;color:var(--muted);font-size:.78rem;cursor:pointer}.reset:hover{color:var(--text)}.id-input{width:100%;height:44px;padding:0 12px;background:#fff;border:1px solid var(--line);border-radius:9px;color:var(--text);outline:0}.id-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #10a77b1c}.download{height:48px;border:0;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:800;cursor:pointer;box-shadow:0 10px 24px #078c6725}.download:hover{filter:brightness(1.04)}.download:active{transform:translateY(1px)}.message{min-height:18px;margin:-8px 0 0;font-size:.76rem;color:var(--danger)}
+    @media(max-width:980px){.workspace{grid-template-columns:1fr 1fr}.controls{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr}.controls>.download,.controls>.message{grid-column:1/-1}.group{border-bottom:0;padding-bottom:0}.canvas-wrap{min-height:390px}}
+    @media(max-width:680px){.shell{padding:22px 14px 32px}.top{align-items:start;flex-direction:column;gap:9px}.workspace{grid-template-columns:1fr}.controls{grid-column:auto;display:flex}.controls>.download,.controls>.message{grid-column:auto}.canvas-wrap{min-height:365px;padding:18px}.privacy{white-space:normal}.stage-panel,.preview-panel,.controls{padding:14px}}
+    .workspace{align-items:stretch}.workspace>.panel{min-width:0}
+    .drop-active{outline:2px dashed var(--accent);outline-offset:3px;background-color:#edf9f5}.privacy{color:#187457}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <div class="brand"><h1>DF11 페이스팩 생성기</h1><p>사진을 프레임에 맞춘 뒤 PNG로 저장하세요.</p></div>
+      <div class="privacy"><span class="dot"></span>사진은 기기 안에서만 처리됩니다</div>
+    </header>
+    <section class="workspace">
+      <article class="panel stage-panel">
+        <div class="panel-head"><h2>사진 편집</h2><span class="badge">드래그로 이동</span></div>
+        <div class="canvas-wrap"><canvas id="editor" class="editor-canvas" width="260" height="310" aria-label="선수 사진 편집 영역"></canvas></div>
+        <p class="hint">사진 파일을 여기에 놓아 업로드하세요.<br>드래그로 이동 · Shift + 드래그로 수평/수직 이동<br>은색 중심선은 다운로드에 포함되지 않습니다.</p>
+      </article>
+      <article class="panel preview-panel">
+        <div class="panel-head"><h2>최종 결과 미리보기</h2><span class="badge">260 × 310 PNG</span></div>
+        <div class="canvas-wrap"><canvas id="preview" class="preview-canvas" width="260" height="310" aria-label="최종 결과 미리보기"></canvas></div>
+        <p class="hint">다운로드되는 이미지와 동일한 모습입니다.</p>
+      </article>
+      <aside class="panel controls">
+        <div class="group">
+          <span class="label">선수 사진</span>
+          <label class="upload">사진 선택<input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp"></label>
+          <span class="filename" id="filename">사진을 선택하거나 편집 영역에 끌어다 놓으세요</span>
+        </div>
+        <div class="group">
+          <div class="row"><span class="label" style="margin:0">확대 / 축소</span><button class="reset" id="reset" type="button">처음 위치</button></div>
+          <div class="row" style="margin-top:10px"><button class="icon-btn" id="minus" type="button" aria-label="축소">−</button><input id="zoom" type="range" min="20" max="250" value="59" aria-label="사진 확대 축소"><button class="icon-btn" id="plus" type="button" aria-label="확대">＋</button><span class="zoom-value" id="zoomValue">59%</span></div>
+        </div>
+        <div class="group">
+          <span class="label" style="text-align:center">위치 미세 조정</span>
+          <div class="nudge">
+            <button class="icon-btn" type="button" data-dir="up" aria-label="위로 이동">↑</button><button class="icon-btn" type="button" data-dir="left" aria-label="왼쪽으로 이동">←</button><button class="icon-btn" type="button" data-dir="down" aria-label="아래로 이동">↓</button><button class="icon-btn" type="button" data-dir="right" aria-label="오른쪽으로 이동">→</button>
+          </div>
+        </div>
+        <div class="group"><label class="label" for="playerId">선수 ID</label><input class="id-input" id="playerId" inputmode="numeric" placeholder="예: 43425040" autocomplete="off"></div>
+        <button class="download" id="download" type="button">PNG 다운로드</button>
+        <p class="message" id="message" role="alert"></p>
+      </aside>
+    </section>
+  </main>
+  <script>
+    const W=260,H=310;
+    const editor=document.querySelector('#editor'), preview=document.querySelector('#preview');
+    const ectx=editor.getContext('2d'), pctx=preview.getContext('2d');
+    const frame=new Image(), mask=new Image();let player=new Image();
+    const playerLayer=document.createElement('canvas');playerLayer.width=W;playerLayer.height=H;const lctx=playerLayer.getContext('2d');
+    const frameOverlay=document.createElement('canvas');frameOverlay.width=W;frameOverlay.height=H;const octx=frameOverlay.getContext('2d');
+    let scale=1,x=0,y=0,ready=0,dragging=false,lastX=0,lastY=0,axis=null,shiftMode=false,anchorX=0,anchorY=0,originX=0,originY=0,uploadSequence=0;
+    function buildFrameOverlay(){
+      if(!frame.naturalWidth||!mask.naturalWidth)return;
+      octx.clearRect(0,0,W,H);octx.globalCompositeOperation='source-over';octx.drawImage(frame,0,0,W,H);
+      octx.globalCompositeOperation='destination-out';octx.drawImage(mask,0,0,W,H);octx.globalCompositeOperation='source-over';
+    }
+    frame.onload=()=>{ready++;buildFrameOverlay();draw()};mask.onload=()=>{ready++;buildFrameOverlay();draw()};
+    frame.src='assets/frame.png';mask.src='assets/frame-mask.png';
+    function composite(ctx,editing=false){
+      ctx.clearRect(0,0,W,H);
+      if(frame.naturalWidth)ctx.drawImage(frame,0,0,W,H);
+      lctx.clearRect(0,0,W,H);lctx.globalCompositeOperation='source-over';
+      if(player.complete&&player.naturalWidth)lctx.drawImage(player,x,y,player.naturalWidth*scale,player.naturalHeight*scale);
+      if(mask.naturalWidth){lctx.globalCompositeOperation='destination-in';lctx.drawImage(mask,0,0,W,H);lctx.globalCompositeOperation='source-over'}
+      ctx.drawImage(playerLayer,0,0);
+      ctx.drawImage(frameOverlay,0,0);
+      if(editing){ctx.save();ctx.strokeStyle='#6ae4b9';ctx.setLineDash([5,4]);ctx.lineWidth=1;ctx.strokeRect(19.5,18.5,222,274);ctx.strokeStyle='#a6abb2';ctx.setLineDash([6,3,1,3]);ctx.beginPath();ctx.moveTo(130.5,18);ctx.lineTo(130.5,293);ctx.moveTo(19,155.5);ctx.lineTo(242,155.5);ctx.stroke();ctx.restore()}
+    }
+    function draw(){composite(ectx,true);composite(pctx,false);document.querySelector('#zoom').value=Math.round(scale*100);document.querySelector('#zoomValue').textContent=Math.round(scale*100)+'%'}
+    function fitImage(center=true){if(!player.naturalWidth)return;scale=W/player.naturalWidth;x=(W-player.naturalWidth*scale)/2;y=center?(H-player.naturalHeight*scale)/2:-14;draw()}
+    function setScale(next){next=Math.max(.2,Math.min(2.5,next));const cx=W/2,cy=H/2,ratio=next/scale;x=cx-(cx-x)*ratio;y=cy-(cy-y)*ratio;scale=next;draw()}
+    function showError(text){const msg=document.querySelector('#message');msg.style.color='var(--danger)';msg.textContent=text}
+    function loadPhoto(file){
+      if(!file)return;
+      if(!/^image\/(png|jpeg|webp)$/.test(file.type)){showError('PNG, JPG 또는 WebP 사진을 선택해주세요.');return}
+      const sequence=++uploadSequence,url=URL.createObjectURL(file),next=new Image();
+      next.onload=()=>{URL.revokeObjectURL(url);if(sequence!==uploadSequence)return;stopDrag();player=next;fitImage(true);document.querySelector('#filename').textContent=file.name;document.querySelector('#message').textContent=''};
+      next.onerror=()=>{URL.revokeObjectURL(url);if(sequence===uploadSequence)showError('사진을 읽을 수 없습니다. 다른 파일을 선택해주세요.')};next.src=url;
+    }
+    document.querySelector('#fileInput').addEventListener('change',e=>{loadPhoto(e.target.files[0]);e.target.value=''});
+    const dropZones=[document.querySelector('.stage-panel'),document.querySelector('.upload')];
+    dropZones.forEach(zone=>{
+      zone.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='copy';zone.classList.add('drop-active')});
+      zone.addEventListener('dragleave',e=>{if(!zone.contains(e.relatedTarget))zone.classList.remove('drop-active')});
+      zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drop-active');loadPhoto(e.dataTransfer.files[0])});
+    });
+    window.addEventListener('dragover',e=>{if(Array.from(e.dataTransfer.types).includes('Files'))e.preventDefault()});
+    window.addEventListener('drop',e=>{if(Array.from(e.dataTransfer.types).includes('Files'))e.preventDefault();dropZones.forEach(zone=>zone.classList.remove('drop-active'))});
+    document.querySelector('#zoom').addEventListener('input',e=>setScale(Number(e.target.value)/100));
+    document.querySelector('#minus').onclick=()=>setScale(scale-.05);document.querySelector('#plus').onclick=()=>setScale(scale+.05);document.querySelector('#reset').onclick=()=>fitImage(true);
+    document.querySelectorAll('[data-dir]').forEach(btn=>btn.onclick=()=>{const d=btn.dataset.dir;x+=d==='left'?-2:d==='right'?2:0;y+=d==='up'?-2:d==='down'?2:0;draw()});
+    editor.addEventListener('pointerdown',e=>{if(!player.naturalWidth||e.button!==0)return;dragging=true;editor.classList.add('dragging');editor.setPointerCapture(e.pointerId);lastX=anchorX=e.clientX;lastY=anchorY=e.clientY;originX=x;originY=y;axis=null;shiftMode=e.shiftKey});
+    editor.addEventListener('pointermove',e=>{
+      if(!dragging)return;
+      const rect=editor.getBoundingClientRect();
+      if(e.shiftKey!==shiftMode){anchorX=lastX;anchorY=lastY;originX=x;originY=y;axis=null;shiftMode=e.shiftKey}
+      const dx=(e.clientX-anchorX)*W/rect.width,dy=(e.clientY-anchorY)*H/rect.height;
+      if(shiftMode){if(!axis&&Math.max(Math.abs(dx),Math.abs(dy))>=2)axis=Math.abs(dx)>=Math.abs(dy)?'x':'y';x=originX+(axis==='x'?dx:0);y=originY+(axis==='y'?dy:0)}
+      else{x=originX+dx;y=originY+dy}
+      lastX=e.clientX;lastY=e.clientY;draw();
+    });
+    function stopDrag(){dragging=false;editor.classList.remove('dragging')}editor.addEventListener('pointerup',stopDrag);editor.addEventListener('pointercancel',stopDrag);
+    document.querySelector('#download').onclick=()=>{const id=document.querySelector('#playerId').value.trim(),msg=document.querySelector('#message');if(!id){msg.textContent='선수 ID를 입력해주세요.';document.querySelector('#playerId').focus();return}const safe=id.replace(/[\\/:*?\"<>|]/g,'_');composite(pctx,false);const a=document.createElement('a');a.download=safe+'.png';a.href=preview.toDataURL('image/png');a.click();msg.style.color='var(--accent)';msg.textContent=safe+'.png 다운로드를 시작했습니다.'};
+    document.querySelector('#download').addEventListener('click',e=>{if(!player.naturalWidth){e.stopImmediatePropagation();showError('선수 사진을 먼저 업로드해주세요.')}},true);
+    draw();
+    const context=document.modelContext;
+    if(context?.registerTool){
+      try{void Promise.resolve(context.registerTool({name:'configure_player_card',title:'선수 카드 배치 설정',description:'선수 ID와 사진의 확대율 및 위치를 편집 화면에 적용합니다.',inputSchema:{type:'object',properties:{playerId:{type:'string',description:'결과 파일명에 사용할 선수 ID'},zoomPercent:{type:'number',minimum:20,maximum:250},x:{type:'number',description:'사진의 왼쪽 위치(px)'},y:{type:'number',description:'사진의 위쪽 위치(px)'}},additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(input){if(!input||typeof input!=='object')throw new Error('설정값이 필요합니다.');if(input.playerId!==undefined){if(typeof input.playerId!=='string'||!input.playerId.trim())throw new Error('선수 ID는 빈 문자열일 수 없습니다.');document.querySelector('#playerId').value=input.playerId.trim()}if(input.zoomPercent!==undefined){if(typeof input.zoomPercent!=='number'||input.zoomPercent<20||input.zoomPercent>250)throw new Error('확대율은 20~250 사이여야 합니다.');setScale(input.zoomPercent/100)}if(input.x!==undefined){if(typeof input.x!=='number')throw new Error('x는 숫자여야 합니다.');x=input.x}if(input.y!==undefined){if(typeof input.y!=='number')throw new Error('y는 숫자여야 합니다.');y=input.y}draw();return{playerId:document.querySelector('#playerId').value,zoomPercent:Math.round(scale*100),x:Math.round(x),y:Math.round(y)}}})).catch(()=>{})}catch(_){ }
+    }
+  </script>
+</body>
+</html>
